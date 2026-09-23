@@ -14,7 +14,7 @@ from loader.db_loader import load_conversation_from_db, import_to_memory
 from pathlib import Path
 
 # .venv\Scripts\Activate.ps1
-# python backend/main.py
+# python cli/main.py
 
 def print_token_stats(stats):
     """根据 config 打印每轮 token 统计。"""
@@ -51,7 +51,7 @@ def main():
     # 从 SQLite 数据库加载对话记录并导入到记忆系统
     db_path = Path(__file__).parent.parent / "data" / CLIENT_ID / f"{THREAD_ID}.db"
     
-    agent, model, stats = build_agent(str(db_path))
+    agent, model, stats, conn = build_agent(str(db_path))
     config = {"configurable": {"thread_id": THREAD_ID}}
     try:
         # 从数据库加载对话记录
@@ -94,6 +94,8 @@ def main():
         except Exception as e:
             print(f"发生错误: {e}")
             break
+    
+    conn.close()
 
 
 if __name__ == "__main__":
