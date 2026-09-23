@@ -22,11 +22,27 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# 数据文件（如果不想提交数据）
-# data/
+# 数据文件
+data/
 
 # 日志文件
 *.log
 
+# PyInstaller 打包临时文件
+build/
+*.spec
+
 # 开发规则文件
 rule.md
+
+# 前端 Node.js 依赖
+node_modules/
+
+# 前端构建输出
+dist/
+dist-electron/
+
+# 前端日志
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

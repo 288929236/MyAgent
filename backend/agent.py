@@ -1,6 +1,5 @@
 import os
 import sqlite3
-import atexit
 from pathlib import Path
 from dotenv import load_dotenv
 from langchain_deepseek import ChatDeepSeek
@@ -16,10 +15,10 @@ from agent_config import (
     LOG_TOKEN_PER_TURN,
     LOG_TOKEN_TOTAL,
 )
-from client_config import CLIENT_ID, THREAD_ID
+from paths import get_env_file
 
-# 加载 .env（在 backend/ 目录下运行时会自动读到 backend/.env）
-load_dotenv()
+# 加载 .env
+load_dotenv(get_env_file())
 
 
 def _wrap_token_stats(agent, stats):
@@ -86,12 +85,5 @@ def build_agent(db_path: str):
     if ENABLE_TOKEN_STATS:
         _wrap_token_stats(agent, stats)
 
-    # 注册清理函数，确保程序退出时关闭数据库连接
-    def cleanup():
-        try:
-            conn.close()
-        except:
-            pass
-    atexit.register(cleanup)
-
-    return agent, model, stats
+    # 返回 agent、model、stats 和连接对象，方便外部关闭
+    return agent, model, stats, conn
