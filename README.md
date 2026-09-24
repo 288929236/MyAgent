@@ -71,8 +71,8 @@ MyAgent/
 │
 ├── data/                 # 数据存储（db 文件）
 ├── docs/                 # 项目文档
-├── .env                  # API Key 配置
-└── requirements.txt
+├── images/               # 项目图片
+└── .env                  # API Key 配置
 ```
 
 ---
