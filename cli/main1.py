@@ -14,7 +14,7 @@ from loader.db_loader import load_conversation_from_db, import_to_memory
 from pathlib import Path
 
 # .venv\Scripts\Activate.ps1
-# python cli/main.py
+# python cli/main1.py
 
 def print_token_stats(stats):
     """根据 config 打印每轮 token 统计。"""

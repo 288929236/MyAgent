@@ -25,6 +25,13 @@ Thumbs.db
 # 数据文件
 data/
 
+# 快照文件
+.snapshots/
+
+# 测试文件
+test/
+
+
 # 日志文件
 *.log
 
