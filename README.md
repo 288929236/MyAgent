@@ -20,11 +20,11 @@
 ### 桌面端登录
 ![桌面端登录](images/桌面端登录.jpg)
 
-### 桌面端聊天
-![桌面端聊天](images/桌面端CHat模式.jpg)
+### 桌面端 Chat 模式
+![桌面端 Chat 模式](images/桌面端CHat模式.jpg)
 
-### CLI 终端模式
-![CLI 终端](images/CLI终端Work模式.jpg)
+### CLI 终端 Work 模式
+![CLI 终端 Work 模式](images/CLI终端Work模式.jpg)
 
 ---
 
