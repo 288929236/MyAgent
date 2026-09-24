@@ -51,23 +51,27 @@
 
 ```
 MyAgent/
+├── .venv/                 # Python 虚拟环境
 ├── backend/              # 后端服务（FastAPI + Agent）
 │   ├── api.py            # Web 接口
 │   ├── agent.py          # Agent 核心逻辑
 │   ├── agent_config.py   # Agent 配置
 │   ├── tools_registry.py # 工具自动发现
 │   ├── tools/            # 工具集
-│   └── requirements.txt
+│   └── requirements.txt  # Python 依赖
 │
 ├── cli/                  # CLI 命令行工具
 │   ├── main1.py          # 基础对话测试
 │   ├── main2.py          # 文件夹操作 Agent
 │   ├── client_config.py   # 客户配置
-│   └── tools/            # 工具集
+│   ├── tools/            # 工具集
+│   └── requirements.txt  # Python 依赖
 │
 ├── frontend/             # 前端（Electron + React）
-│   ├── src/
-│   └── package.json
+│   ├── node_modules/     # npm 依赖包
+│   ├── src/              # 源代码
+│   ├── package.json     # 前端依赖配置
+│   └── electron-builder.yml  # 打包配置
 │
 ├── data/                 # 数据存储（db 文件）
 ├── docs/                 # 项目文档
