@@ -1,22 +1,18 @@
-# 项目依赖库
+# 后端服务依赖
 # 在虚拟环境中安装：pip install -r requirements.txt
 
-# 核心框架
+# AI Agent 核心
 langgraph>=0.2.0
 langchain-core>=0.3.0
-
-# DeepSeek 模型集成
+langchain>=0.3.0
 langchain-deepseek>=0.1.0
 
-# 环境变量管理
-python-dotenv>=1.0.0
-
-# SQLite 检查点存储
-langgraph-checkpoint-sqlite>=2.0.0
-
-# 数据序列化
-msgpack>=1.0.0
-
-# Web 后端 API
+# Web API 框架
 fastapi>=0.115.0
 uvicorn>=0.32.0
+
+# 数据存储
+langgraph-checkpoint-sqlite>=2.0.0
+
+# 环境变量
+python-dotenv>=1.0.0

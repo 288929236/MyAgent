@@ -1,3 +1,19 @@
-langchain-deepseek
-langgraph
-python-dotenv
+# CLI 工具依赖
+# 在虚拟环境中安装：pip install -r requirements.txt
+
+# 核心框架
+langgraph>=0.2.0
+langchain-core>=0.3.0
+langchain>=0.3.0
+
+# DeepSeek 模型集成
+langchain-deepseek>=0.1.0
+
+# 环境变量管理
+python-dotenv>=1.0.0
+
+# SQLite 检查点存储
+langgraph-checkpoint-sqlite>=2.0.0
+
+# 终端美化
+rich>=13.0.0
