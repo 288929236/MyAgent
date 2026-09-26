@@ -1,16 +1,18 @@
 # MyAgent
 
-基于 DeepSeek + LangGraph 的 AI Agent 桌面应用，支持 Web 界面和 CLI 两种模式。
+基于 DeepSeek + LangGraph 的 AI Agent 桌面应用，支持 Web 界面和 CLI 两种模式，集成 RAG 向量检索知识库。
 
 ---
 
 ## ✨ 功能特性
 
 - 🤖 **AI 对话**：接入 DeepSeek 大模型，支持多轮对话
-- 🔧 **工具调用**：自动识别并调用自定义工具（天气查询、文件操作等）
+- 🔧 **工具调用**：自动识别并调用自定义工具（文件操作、知识库检索等）
 - 💾 **记忆持久化**：对话历史存到 SQLite，下次打开继续聊
 - 📁 **文件夹操作**：Agent 接管指定文件夹，对 md 文档进行增删改查
 - 📸 **快照备份**：修改文件前自动保存快照，改坏了可以回滚
+- 📚 **RAG 知识库**：向量检索公司制度、账本、流水、人员信息
+- 🧠 **BGE 向量模型**：本地 Embedding，语义相似度搜索
 - 🖥️ **桌面应用**：Electron 打包成 Windows exe，双击就能用
 
 ---
@@ -40,7 +42,12 @@
 - **Python + FastAPI** - Web API
 - **LangChain + LangGraph** - Agent 框架
 - **DeepSeek** - 大模型
-- **SQLite** - 数据存储
+- **SQLite** - 对话状态存储
+
+### RAG 向量检索
+- **BGE-base-zh** - 中文 Embedding 模型
+- **sentence-transformers** - 向量计算
+- **余弦相似度** - 语义检索
 
 ### CLI
 - **Rich** - 终端美化输出
@@ -52,6 +59,8 @@
 ```
 MyAgent/
 ├── .venv/                 # Python 虚拟环境
+├── models/                # BGE 向量模型（git忽略）
+│
 ├── backend/              # 后端服务（FastAPI + Agent）
 │   ├── api.py            # Web 接口
 │   ├── agent.py          # Agent 核心逻辑
@@ -60,12 +69,27 @@ MyAgent/
 │   ├── tools/            # 工具集
 │   └── requirements.txt  # Python 依赖
 │
-├── cli/                  # CLI 命令行工具
+├── cli/                  # CLI 命令行工具（独立运行）
 │   ├── main1.py          # 基础对话测试
-│   ├── main2.py          # 文件夹操作 Agent
+│   ├── main2.py          # 文件夹操作 Agent + RAG 检索
+│   ├── agent.py          # Agent 核心
 │   ├── client_config.py   # 客户配置
+│   ├── tools_registry.py # 工具自动发现
 │   ├── tools/            # 工具集
+│   │   └── custom/       # 自定义工具
+│   │       ├── md_operation.py      # md 文件操作
+│   │       └── search_knowledge.py # 知识库检索
 │   └── requirements.txt  # Python 依赖
+│
+├── document/             # RAG 向量数据库
+│   ├── README.md         # 说明文档
+│   ├── codes/            # 处理脚本
+│   │   ├── build_rag.py  # 文档切分+向量化
+│   │   └── test_embedding.py # 向量测试
+│   ├── policy/           # 制度库（请假、报销等）
+│   ├── ledger/           # 账本库（财务收支）
+│   ├── transaction/      # 流水库（银行交易）
+│   └── employee/         # 人员库（员工信息）
 │
 ├── frontend/             # 前端（Electron + React）
 │   ├── node_modules/     # npm 依赖包
@@ -94,26 +118,56 @@ python -m venv .venv
 .venv\Scripts\Activate.ps1
 # Mac/Linux:
 source .venv/bin/activate
-
-# 安装后端依赖
-pip install -r backend/requirements.txt
 ```
 
-### 2. 配置 API Key
+### 2. 安装依赖
 
-在 `backend/.env` 里填入你的 DeepSeek API Key：
+```bash
+# 后端依赖
+pip install -r backend/requirements.txt
+
+# CLI 依赖
+pip install -r cli/requirements.txt
+```
+
+### 3. 下载 BGE 向量模型
+
+```bash
+# ModelScope 下载（国内推荐）
+pip install modelscope
+python -c "from modelscope import snapshot_download; snapshot_download('BAAI/bge-base-zh-v1.5', cache_dir='./models')"
+```
+
+### 4. 配置 API Key
+
+在根目录 `.env` 里填入 DeepSeek API Key：
 ```
 DEEPSEEK_API_KEY=sk-xxxxxxxxxxxxxxxx
 ```
 
-### 3. 启动后端
+### 5. 处理知识库文档
+
+```bash
+# 把文档放到 document/policy/raw/ 等目录
+# 运行切分+向量化
+cd document/codes
+python build_rag.py
+```
+
+### 6. 启动 CLI 模式
+
+```bash
+python cli/main2.py
+```
+
+### 7. 启动后端服务
 
 ```bash
 cd backend
 python api.py
 ```
 
-### 4. 启动前端
+### 8. 启动前端
 
 ```bash
 cd frontend
@@ -140,7 +194,8 @@ npm run build:win
 
 ## 📝 开发说明
 
-- 后端和 CLI 共用 Agent 逻辑，各自独立运行
-- 工具放在 `tools/custom/` 目录下，自动被 Agent 发现
-- 数据存在 `data/` 目录下，按用户和会话分文件
-- 文件修改快照存在 `.snapshots/` 目录下
+- **后端和 CLI 独立**：各自有独立的 Agent 逻辑，互不影响
+- **工具自动发现**：放在 `tools/custom/` 下的 `@tool` 函数会自动被加载
+- **RAG 架构**：文档按 md 标题切分 → BGE 向量化 → 余弦相似度检索 → top3 返回
+- **多知识库**：制度、账本、流水、人员四个库，通过 `search_knowledge(category, query)` 路由
+- **数据存储**：对话历史在 `data/`，快照在 `.snapshots/`，向量在 `document/`
