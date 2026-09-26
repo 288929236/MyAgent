@@ -18,6 +18,9 @@ langgraph-checkpoint-sqlite>=2.0.0
 # 终端美化
 rich>=13.0.0
 
+# HTTP 请求（通义万相生图用）
+requests>=2.31.0
+
 # RAG 向量检索
 sentence-transformers>=2.2.0
 numpy>=1.24.0

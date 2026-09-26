@@ -16,3 +16,6 @@ langgraph-checkpoint-sqlite>=2.0.0
 
 # 环境变量
 python-dotenv>=1.0.0
+
+# HTTP 请求
+requests>=2.31.0

@@ -13,6 +13,7 @@
 - 📸 **快照备份**：修改文件前自动保存快照，改坏了可以回滚
 - 📚 **RAG 知识库**：向量检索公司制度、账本、流水、人员信息
 - 🧠 **BGE 向量模型**：本地 Embedding，语义相似度搜索
+- 🎨 **AI 生图**：调用通义万相文生图，根据文字描述生成图片
 - 🖥️ **桌面应用**：Electron 打包成 Windows exe，双击就能用
 
 ---
@@ -41,7 +42,8 @@
 ### 后端
 - **Python + FastAPI** - Web API
 - **LangChain + LangGraph** - Agent 框架
-- **DeepSeek** - 大模型
+- **DeepSeek** - 大语言模型
+- **通义万相 qwen-image-3.0-pro** - 文生图模型
 - **SQLite** - 对话状态存储
 
 ### RAG 向量检索
@@ -67,6 +69,7 @@ MyAgent/
 │   ├── agent_config.py   # Agent 配置
 │   ├── tools_registry.py # 工具自动发现
 │   ├── tools/            # 工具集
+│   ├── .env              # 后端 API Key 配置
 │   └── requirements.txt  # Python 依赖
 │
 ├── cli/                  # CLI 命令行工具（独立运行）
@@ -78,7 +81,9 @@ MyAgent/
 │   ├── tools/            # 工具集
 │   │   └── custom/       # 自定义工具
 │   │       ├── md_operation.py      # md 文件操作
-│   │       └── search_knowledge.py # 知识库检索
+│   │       ├── search_knowledge.py # 知识库检索
+│   │       └── generate_image.py  # AI 生图（通义万相）
+│   ├── .env              # CLI API Key 配置
 │   └── requirements.txt  # Python 依赖
 │
 ├── document/             # RAG 向量数据库
@@ -100,10 +105,30 @@ MyAgent/
 ├── data/                 # 数据存储（db 文件）
 ├── docs/                 # 项目文档
 ├── images/               # 项目图片
-└── .env                  # API Key 配置
+└── .gitignore            # Git 忽略规则
 ```
 
 ---
+
+## 📝 API Key 配置
+
+分别在 `cli/` 和 `backend/` 目录下创建 `.env` 文件：
+
+### cli/.env（CLI 模式用）
+```env
+# DeepSeek 大模型 API Key（必须）
+DEEPSEEK_API_KEY=sk-xxxxxxxxxxxxxxxx
+
+# 通义万相生图 API Key（可选，需要生图功能时配置）
+# 阿里云百炼平台申请：https://bailian.console.aliyun.com/
+DASHSCOPE_API_KEY=sk-xxxxxxxxxxxxxxxx
+```
+
+### backend/.env（桌面端后端用）
+```env
+# DeepSeek 大模型 API Key（必须）
+DEEPSEEK_API_KEY=sk-xxxxxxxxxxxxxxxx
+```
 
 ## 🚀 快速开始
 
@@ -138,14 +163,7 @@ pip install modelscope
 python -c "from modelscope import snapshot_download; snapshot_download('BAAI/bge-base-zh-v1.5', cache_dir='./models')"
 ```
 
-### 4. 配置 API Key
-
-在根目录 `.env` 里填入 DeepSeek API Key：
-```
-DEEPSEEK_API_KEY=sk-xxxxxxxxxxxxxxxx
-```
-
-### 5. 处理知识库文档
+### 4. 处理知识库文档
 
 ```bash
 # 把文档放到 document/policy/raw/ 等目录
@@ -154,20 +172,20 @@ cd document/codes
 python build_rag.py
 ```
 
-### 6. 启动 CLI 模式
+### 5. 启动 CLI 模式
 
 ```bash
 python cli/main2.py
 ```
 
-### 7. 启动后端服务
+### 6. 启动后端服务
 
 ```bash
 cd backend
 python api.py
 ```
 
-### 8. 启动前端
+### 7. 启动前端
 
 ```bash
 cd frontend
