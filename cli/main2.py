@@ -149,7 +149,20 @@ def main():
                 {"messages": [("user", user_input)]},
                 config=config,
             )
-            
+
+            # 检查是否调用了搜索知识库工具，如果有就打印来源
+            last_messages = result['messages']
+            for msg in last_messages:
+                if msg.type == "tool" and "search_knowledge" in str(msg.name):
+                    # 从工具返回结果里提取来源文档
+                    content = msg.content
+                    # 打印检索来源
+                    console.print("\n[dim]📚 知识库检索来源：[/dim]")
+                    for line in content.split("\n"):
+                        if "来源文档" in line:
+                            console.print(f"[dim]  {line.strip()}[/dim]")
+                    console.print()
+
             # 打印最后一条消息（渲染 Markdown）
             print()
             console.print(Markdown(result['messages'][-1].content))

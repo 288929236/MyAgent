@@ -25,6 +25,9 @@ Thumbs.db
 # 数据文件
 data/
 
+# 模型文件（BGE 向量模型等）
+models/
+
 # 快照文件
 .snapshots/
 
